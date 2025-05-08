@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; max-width: 800px; margin: 1rem auto; padding: 2rem; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    .form-group { margin-bottom: 1.5rem; }
+    label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: #2c3e50; }
+    input, select, textarea { width: 100%; padding: 0.8rem; border: 2px solid #bdc3c7; border-radius: 6px; transition: border-color 0.3s; }
+    input:focus, select:focus, textarea:focus { border-color: #3498db; outline: none; }
+    button { background: #27ae60; color: white; padding: 1rem 2rem; border: none; border-radius: 6px; cursor: pointer; transition: background 0.3s; }
+    button:hover { background: #219a52; }
+    .nav-link { display: inline-block; margin: 1rem 0; padding: 0.6rem 1.5rem; color: #3498db; text-decoration: none; border-radius: 8px; border: #3498db 1px solid; }
+    form {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .form-group {
+      width: 100%;
+      box-sizing: border-box;
+    }
+    input, select, textarea {
+      width: 100%;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+<body>
+  <h2 style="color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 0.5rem;">Reportar Mascota Perdida</h2>
+  <a href="<?= url ?>?v=listado_mascotas_perdidas" class="nav-link">← Volver al Listado</a>
+  <form id="formReporte" onsubmit="event.preventDefault(); enviarFormulario()">
+    <div class="form-group">
+      <label>Nombre de la mascota *</label>
+      <input type="text" name="nombre" required>
+    </div>
+
+    <div class="form-group">
+      <label>Tipo *</label>
+      <select name="tipo" required>
+        <option value="">Seleccionar...</option>
+        <option>Perro</option>
+        <option>Gato</option>
+        <option>Ave</option>
+        <option>Otro</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Estado de salud *</label>
+      <select name="estadoSalud" required>
+        <option value="">Seleccionar...</option>
+        <option>Enfermo</option>
+        <option>Sano</option>
+        <option>Otro</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Última ubicación conocida *</label>
+      <input type="text" name="ubicacion" placeholder="Ej: Parque Central, Calle 10 #5-20" required>
+    </div>
+
+    <div class="form-group">
+      <label>Reportado por *</label>
+      <input type="text" name="reportadoPor" required>
+    </div>
+
+    <div class="form-group">
+      <label>Estado *</label>
+      <select name="estado" required>
+        <option value="">Seleccionar...</option>
+        <option>Encontrado</option>
+        <option>Perdido</option>
+        <option>Otro</option>
+      </select>
+    </div>
+
+    <button type="submit">Enviar Reporte</button>
+    <div id="mensaje"></div>
+  </form>
+
+  <script>
+    function navegarA(vista) {
+      google.script.history.push({ v: vista });
+      google.script.run
+        .withSuccessHandler(html => document.body.innerHTML = html)
+        .doGet({ parameter: { v: vista } });
+    }
+
+    function enviarFormulario() {
+      const formulario = document.getElementById('formReporte');
+      const datos = Object.fromEntries(new FormData(formulario));
+      
+      google.script.run
+        .withSuccessHandler(respuestaExito)
+        .withFailureHandler(mostrarError)
+        .guardarMascotaPerdida(datos);
+    }
+
+    function respuestaExito(respuesta) {
+      document.getElementById('mensaje').innerHTML = `
+        <p style="color: green; font-weight: bold;">${respuesta.mensaje}</p>
+      `;
+      document.getElementById('formReporte').reset();
+    }
+
+    function mostrarError(error) {
+      document.getElementById('mensaje').innerHTML = `
+        <p style="color: red; font-weight: bold;">Error: ${error.message}</p>
+      `;
+    }
+  </script>
+</body>
+</html>
