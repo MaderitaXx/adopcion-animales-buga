@@ -156,12 +156,15 @@ function guardarMascotaPerdida(datos) {
   return { estado: 'éxito', mensaje: 'Reporte guardado correctamente' };
 }
 
+
 // ========================
 // VISTAS WEB (si usas HTMLService)
 // ========================
 const VISTAS = {
   FORMULARIO_MASCOTAS_PERDIDAS: 'formulario_mascotas_perdidas',
-  LISTADO_MASCOTAS_PERDIDAS: 'listado_mascotas_perdidas'
+  LISTADO_MASCOTAS_PERDIDAS: 'listado_mascotas_perdidas',
+  FORMULARIO_MASCOTAS_ADOPCION: 'formulario_mascotas_adopcion',
+  LISTADO_MASCOTAS_ADOPCION: 'listado_mascotas_adopcion'
 };
 
 function doGet(e) {
@@ -179,6 +182,12 @@ function doGet(e) {
     case VISTAS.FORMULARIO_MASCOTAS_PERDIDAS:
       plantilla = HtmlService.createTemplateFromFile('FormularioMascotasPerdidas');
       break;
+    case VISTAS.LISTADO_MASCOTAS_ADOPCION:
+      plantilla = HtmlService.createTemplateFromFile('listadomascotasenadopcion');
+      break;
+    case VISTAS.FORMULARIO_MASCOTAS_ADOPCION:
+      plantilla = HtmlService.createTemplateFromFile('Formulariomascotasenadopcion');
+      break;
     default:
       plantilla = HtmlService.createTemplateFromFile('ListadoMascotasPerdidas');
   }
@@ -190,4 +199,20 @@ function doGet(e) {
     .setTitle('Refugio Animal')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
     .addMetaTag('viewport', 'width=device-width, initial-scale=1');
+}
+
+function obtenerMascotasPerdidas() {
+  const hoja = SpreadsheetApp.getActiveSpreadsheet()
+    .getSheetByName(NOMBRE_HOJA_MASCOTAS_PERDIDAS);
+  
+  return hoja?.getDataRange()
+    .getValues()
+    .slice(1)
+    .map(([id, fecha, nombre, tipo, , ubicacion, reportadoPor, estado]) => ({
+      nombre: nombre || 'Sin nombre',
+      tipo: tipo || 'No especificado',
+      ubicacion: ubicacion || 'Sin ubicación',
+      fechaReporte: fecha?.toISOString?.() || 'Fecha no válida',
+      estado: estado || 'Sin estado'
+    })) || [];
 }
