@@ -1,0 +1,199 @@
+<html>
+<head>
+  <base target="_top">
+  <style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; max-width: 800px; margin: 1rem auto; padding: 2rem; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    .form-group { margin-bottom: 1.5rem; }
+    label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: #2c3e50; }
+    input, select, textarea { width: 100%; padding: 0.8rem; border: 2px solid #bdc3c7; border-radius: 6px; transition: border-color 0.3s; box-sizing: border-box; }
+    input:focus, select:focus, textarea:focus { border-color: #3498db; outline: none; }
+    button { background: #27ae60; color: white; padding: 1rem 2rem; border: none; border-radius: 6px; cursor: pointer; transition: background 0.3s; }
+    button:hover { background: #219a52; }
+    .nav-link { display: inline-block; margin: 1rem 0; padding: 0.6rem 1.5rem; color: #3498db; text-decoration: none; border-radius: 8px; border: #3498db 1px solid; }
+    form {
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .form-group {
+      width: 100%;
+      box-sizing: border-box;
+    }
+    textarea { min-height: 100px; }
+  </style>
+</head>
+<body>
+  <h2 style="color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 0.5rem;">Registrar Mascota para Adopción</h2>
+  <a href="<?= url ?>?v=listado_mascotas_adopcion" class="nav-link"></a>
+  
+  <form id="formAdopcion" onsubmit="event.preventDefault(); enviarFormularioAdopcion()">
+    <div class="form-group">
+      <label>Nombre de la mascota *</label>
+      <input type="text" name="nombreMascota" required placeholder="Ej: Luna, Rocky">
+    </div>
+
+    <div class="form-group">
+      <label>Tipo *</label>
+      <select name="tipoMascota" required>
+        <option value="">Seleccionar...</option>
+        <option>Perro</option>
+        <option>Gato</option>
+        <option>Ave</option>
+        <option>Conejo</option>
+        <option>Otro</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Raza</label>
+      <input type="text" name="razaMascota" placeholder="Ej: Mestizo, Labrador, Siamés">
+    </div>
+
+    <div class="form-group">
+      <label>Edad Aproximada *</label>
+      <select name="edadMascota" required>
+        <option value="">Seleccionar...</option>
+        <option>Cachorro (menos de 1 año)</option>
+        <option>Joven (1-3 años)</option>
+        <option>Adulto (3-7 años)</option>
+        <option>Senior (más de 7 años)</option>
+        <option>Desconocida</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Sexo *</label>
+      <select name="sexoMascota" required>
+        <option value="">Seleccionar...</option>
+        <option>Macho</option>
+        <option>Hembra</option>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <label>Tamaño *</label>
+      <select name="tamanoMascota" required>
+        <option value="">Seleccionar...</option>
+        <option>Pequeño (hasta 10kg)</option>
+        <option>Mediano (10-25kg)</option>
+        <option>Grande (más de 25kg)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Estado de salud *</label>
+      <select name="estadoSaludMascota" required>
+        <option value="">Seleccionar...</option>
+        <option>Sano</option>
+        <option>Con tratamiento leve</option>
+        <option>Necesidades especiales</option>
+        <option>Pendiente de revisión veterinaria</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Esterilizado/a *</label>
+      <select name="esterilizadoMascota" required>
+        <option value="">Seleccionar...</option>
+        <option>Sí</option>
+        <option>No</option>
+        <option>No aplica (muy cachorro)</option>
+        <option>Pendiente</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Vacunas al día *</label>
+      <select name="vacunasMascota" required>
+        <option value="">Seleccionar...</option>
+        <option>Sí</option>
+        <option>No</option>
+        <option>Parcialmente</option>
+        <option>No aplica (muy cachorro)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label></label>
+      <textarea name="descripcionMascota" required placeholder="Cuéntanos sobre su personalidad, cómo llegó, si se lleva bien con otros animales, niños, etc."></textarea>
+    </div>
+
+    <div class="form-group">
+      <label></label>
+      <input type="file" name="fotoMascota" accept="image/*">
+      <small>.</small>
+    </div>
+    
+    <h3 style="color: #3498db; margin-top: 2rem; border-top: 1px solid #bdc3c7; padding-top: 1rem;"h3>
+
+    <div class="form-group">
+      <label>Nombre del Contacto / Refugio *</label>
+      <input type="text" name="nombreContacto" required placeholder="Ej: Ana Pérez, Refugio Patitas Felices">
+    </div>
+
+    <div class="form-group">
+      <label>Teléfono de Contacto *</label>
+      <input type="tel" name="telefonoContacto" required placeholder="Ej: +34 600 000 000">
+    </div>
+
+    <div class="form-group">
+      <label>Email de Contacto *</label>
+      <input type="email" name="emailContacto" required placeholder="Ej: contacto@ejemplo.com">
+    </div>
+
+    <div class="form-group">
+      <label>Ubicación actual de la mascota (Ciudad/Zona) *</label>
+      <input type="text" name="ubicacionMascota" required placeholder="Ej: Madrid Centro, Valencia - Benimaclet">
+    </div>
+
+    <button type="submit">Registrar Mascota para Adopción</button>
+    <div id="mensaje" style="margin-top: 1rem;"></div>
+  </form>
+
+  <script>
+
+
+    function enviarFormularioAdopcion() {
+      const formulario = document.getElementById('formAdopcion');
+      const datosFormulario = new FormData(formulario);
+      
+
+      const datos = {};
+      for (let [key, value] of datosFormulario.entries()) {
+        if (key !== 'fotoMascota') { 
+          datos[key] = value;
+        }
+      }
+      
+      const archivoInput = formulario.querySelector('input[name="fotoMascota"]');
+      if (archivoInput.files.length > 0) {
+        const archivo = archivoInput.files[0];
+ 
+        console.log("Archivo seleccionado:", archivo.name, archivo.type);
+
+
+
+      document.getElementById('mensaje').innerHTML = '<p>Enviando datos...</p>';
+      
+      google.script.run
+        .withSuccessHandler(respuestaExitoAdopcion)
+        .withFailureHandler(mostrarErrorAdopcion)
+        .registrarMascotaAdopcion(datos); // Asegúrate que tu función .gs se llame así
+    }
+
+  
+
+    function respuestaExitoAdopcion(respuesta) {
+      document.getElementById('mensaje').innerHTML = `
+        <p style="color: green; font-weight: bold;">${respuesta.mensaje || 'Mascota registrada exitosamente para adopción.'}</p>
+      `;
+      document.getElementById('formAdopcion').reset();
+    }
+
+    function mostrarErrorAdopcion(error) {
+      document.getElementById('mensaje').innerHTML = `
+        <p style="color: red; font-weight: bold;">Error al registrar: ${error.message || 'Ocurrió un error desconocido.'}</p>
+      `;
+    }
+  </script>
+</body>
+</html>
