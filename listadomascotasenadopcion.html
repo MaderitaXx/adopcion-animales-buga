@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; max-width: 1200px; margin: 1rem auto; padding: 2rem; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; table-layout: fixed;  }
+    th, td { padding: 0.8rem; text-align: left; border-bottom: 2px solid #ecf0f1; word-wrap: break-word; }
+    th { background-color: #3498db; color: white; }
+    tr:hover { background-color: #f8f9fa; }
+    .nav-link { display: inline-block; margin: 1rem 0; padding: 0.6rem 1.5rem; color: #3498db; text-decoration: none; border-radius: 8px; border: #3498db 1px solid; }
+    .estado-adopcion { padding: 0.4rem 0.8rem; border-radius: 12px; font-size: 0.9rem; color: white; text-align: center; display: inline-block; min-width: 80px; }
+    .disponible { background: #2ecc71; } 
+    .reservado { background: #f39c12; } 
+    .adoptado { background: #95a5a6; } 
+    .accion-btn { padding: 0.5rem 1rem; border: none; border-radius: 5px; color: white; cursor: pointer; text-decoration: none; font-size: 0.9em; margin-right: 5px; }
+    .btn-detalles { background-color: #3498db; }
+    .btn-detalles:hover { background-color: #2980b9; }
+    .img-mascota { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; vertical-align: middle; margin-right: 10px;}
+    .col-foto { width: 80px; }
+    .col-nombre { width: 15%; }
+    .col-tipo-raza { width: 20%; }
+    .col-edad-sexo { width: 15%; }
+    .col-ubicacion { width: 20%; }
+    .col-estado { width: 120px; text-align: center;}
+    .col-acciones { width: 150px; text-align: center; }
+  </style>
+</head>
+<body>
+  <h2 style="color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 0.5rem;">Mascotas Disponibles para Adopción</h2>
+  <a class="nav-link" href="<?= url ?>?v=formulario_mascotas_adopcion">➕ Registrar Nueva Mascota para Adopción</a>
+  <a class="nav-link" href="<?= url ?>?v=listado_mascotas_perdidas">📋 Listado Mascotas Perdidas</a>
+  
+  <table>
+    <thead>
+      <tr>
+        <th class="col-foto">Foto</th>
+        <th class="col-nombre">Nombre</th>
+        <th class="col-tipo-raza">Tipo / Raza</th>
+        <th class="col-edad-sexo">Edad / Sexo</th>
+        <th class="col-ubicacion">Ubicación</th>
+        <th class="col-estado">Estado</th>
+        <th class="col-acciones">Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="datosAdopcion">
+      <!-- Las filas de datos se insertarán aquí por JavaScript -->
+    </tbody>
+  </table>
+
+  <script>
+   
+    function verDetallesMascota(idMascota) {
+   
+      alert(`Mostrar detalles para mascota ID: ${idMascota}. Implementa esta función.`);
+    }
+
+    window.onload = function() {
+      cargarMascotasAdopcion();
+    };
+
+    function cargarMascotasAdopcion() {
+      const tbody = document.getElementById('datosAdopcion');
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Cargando mascotas...</td></tr>'; 
+
+      google.script.run
+        .withSuccessHandler(mascotas => {
+          if (!Array.isArray(mascotas)) {
+            console.error("Los datos recibidos no son un array:", mascotas);
+            tbody.innerHTML = '<tr><td colspan="7" style="color:red; text-align:center;">Error: Formato de datos incorrecto.</td></tr>';
+            return;
+          }
+          
+          if (mascotas.length > 0) {
+            tbody.innerHTML = mascotas.map(mascota => {
+              const fotoUrl = mascota.fotoUrl || 'https://via.placeholder.com/60x60.png?text=Foto'; 
+              const estadoAdopcion = mascota.estadoAdopcion || 'Disponible'; 
+              const claseEstado = estadoAdopcion.toLowerCase().replace(/\s+/g, '-'); 
+
+              return `
+                <tr>
+                  <td class="col-foto"><img src="${fotoUrl}" alt="Foto de ${mascota.nombreMascota || 'Mascota'}" class="img-mascota"></td>
+                  <td class="col-nombre">${mascota.nombreMascota || 'Sin nombre'}</td>
+                  <td class="col-tipo-raza">${mascota.tipoMascota || 'N/A'} / ${mascota.razaMascota || 'N/A'}</td>
+                  <td class="col-edad-sexo">${mascota.edadMascota || 'N/A'} / ${mascota.sexoMascota || 'N/A'}</td>
+                  <td class="col-ubicacion">${mascota.ubicacionMascota || 'No especificada'}</td>
+                  <td class="col-estado"><span class="estado-adopcion ${claseEstado}">${estadoAdopcion}</span></td>
+                  <td class="col-acciones">
+                    <button class="accion-btn btn-detalles" onclick="verDetallesMascota('${mascota.id || mascota.rowId}')">Ver Detalles</button>
+                    <!-- Podrías añadir más botones aquí, ej: Editar, Cambiar Estado -->
+                  </td>
+                </tr>
+              `;
+            }).join('');
+          } else {
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No hay mascotas registradas para adopción.</td></tr>';
+          }
+        })
+        .withFailureHandler(error => {
+          console.error('Error al cargar mascotas para adopción:', error);
+          tbody.innerHTML = `
+            <tr><td colspan="7" style="color:red; text-align:center;">Error cargando datos: ${error.message}</td></tr>
+          `;
+        })
+        .obtenerMascotasAdopcion(); 
+    };
+</script>
+</body>
+</html>
